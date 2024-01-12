@@ -4,11 +4,11 @@
 #include <sstream>
 #include <string>
 #include <time.h>
-#include <queue>
-#include <unordered_map>
-#include "Agent.h"
-#include "Node.h"
 
+#include <SDL.h>
+#include <SDL_image.h>
+#include "SDL_SimpleApp.h"
+#include "Vector2D.h"
 
 class Grid
 {
@@ -20,24 +20,13 @@ private:
 	int num_cell_x;
 	int num_cell_y;
 
-	std::vector< std::vector<Node> > terrain;
-
-	bool OverlapsWall(bool yTrigger, bool xTrigger, Vector2D checkPos);
-
+	std::vector< std::vector<int> > terrain;
 
 public:
-	std::unordered_map<Node, float> terrain_modifiers;
-
 	Vector2D cell2pix(Vector2D cell);
 	Vector2D pix2cell(Vector2D pix);
-	std::queue<Node> getNeighbors(Vector2D vectorPosition);
 	bool isValidCell(Vector2D cell);
-	int GetType(Vector2D cell);
-	Node GetNode(Vector2D cell);
-	float GetModifierCost(Vector2D cell);
+	int Weight(Vector2D cell);
 	int getNumCellX();
 	int getNumCellY();
-	void resetTerrainModifiers();
-	void AddTerrainModifier(Vector2D pos, int distX, int distY, float cost);
-
 };

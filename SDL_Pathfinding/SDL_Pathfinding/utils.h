@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include<SDL.h>
+#include <SDL.h>
 
 /* Get the resource path for resources located in res/subDir */
 std::string getResourcePath(const std::string &subDir = "");

@@ -1,4 +1,5 @@
 #include "Agent.h"
+#include "SensorySystem.h"
 
 using namespace std;
 
@@ -9,7 +10,7 @@ Agent::Agent() : sprite_texture(0),
 	             currentTargetIndex(-1),
 				 mass(0.1f),
 				 max_force(150),
-				 max_velocity(70),
+				 max_velocity(200),
 				 orientation(0),
 				 sprite_num_frames(0),
 	             sprite_w(0),
@@ -76,10 +77,18 @@ void Agent::setVelocity(Vector2D _velocity)
 	velocity = _velocity;
 }
 
+float Agent::getOrientation()
+{
+	return orientation;
+}
+
 void Agent::update(float dtime, SDL_Event *event)
 {
-	switch (event->type) {
 
+	//cout << "agent update:" << endl;
+
+	switch (event->type) {
+		/* Keyboard & Mouse events */
 	case SDL_KEYDOWN:
 		if (event->key.keysym.scancode == SDL_SCANCODE_SPACE)
 			draw_sprite = !draw_sprite;
@@ -87,9 +96,10 @@ void Agent::update(float dtime, SDL_Event *event)
 	default:
 		break;
 	}
-
-	// Apply the steering behavior
-	steering_behaviour->applySteeringForce(this, dtime);
+	
+	if(sensors != nullptr) sensors->Update(this, dtime);
+	if(brain != nullptr) brain->Update(this, dtime);
+	steering_behaviour->applySteeringForce(this, dtime); // Apply the steering behavior
 	
 	// Update orientation
 	if (velocity.Length())
@@ -139,12 +149,13 @@ void Agent::setCurrentTargetIndex(int idx)
 	currentTargetIndex = idx;
 }
 
-void Agent::draw(int _r, int _g, int _b, int _h)
+void Agent::draw()
 {
 	// Path
 	for (int i = 0; i < (int)path.points.size(); i++)
 	{
-		draw_circle(TheApp::Instance()->getRenderer(), (int)(path.points[i].x), (int)(path.points[i].y), 15, _r, _g, _b, _h);
+		if (blackboard.getEnemyAgent() != nullptr) draw_circle(TheApp::Instance()->getRenderer(), (int)(path.points[i].x), (int)(path.points[i].y), 15, 255, 0, 0, 255);
+		else draw_circle(TheApp::Instance()->getRenderer(), (int)(path.points[i].x), (int)(path.points[i].y), 15, 0, 255, 0, 255);
 		if (i > 0)
 			SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)(path.points[i - 1].x), (int)(path.points[i - 1].y), (int)(path.points[i].x), (int)(path.points[i].y));
 	}
@@ -167,9 +178,15 @@ void Agent::draw(int _r, int _g, int _b, int _h)
 	{
 		draw_circle(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, 15, 255, 255, 255, 255);
 		SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, (int)(position.x+15*cos(orientation*DEG2RAD)), (int)(position.y+15*sin(orientation*DEG2RAD)));
-	}
 
-	
+		if (sensors != nullptr)
+		{
+			draw_circle(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y, ENEMY_VIEWDISTANCE_IN_CELLS * CELL_SIZE, 255, 0, 0, 255);
+			SDL_RenderDrawLine(TheApp::Instance()->getRenderer(), (int)position.x, (int)position.y,
+				(int)(position.x + (ENEMY_VIEWDISTANCE_IN_CELLS * CELL_SIZE) * cos(orientation * DEG2RAD)),
+				(int)(position.y + (ENEMY_VIEWDISTANCE_IN_CELLS * CELL_SIZE) * sin(orientation * DEG2RAD)));
+		}
+	}
 }
 
 bool Agent::loadSpriteTexture(char* filename, int _num_frames)
@@ -194,29 +211,19 @@ bool Agent::loadSpriteTexture(char* filename, int _num_frames)
 	return true;
 }
 
-void Agent::setMaxVelocity(float newVelocity)
+void Agent::CalculatePath()
 {
-	max_velocity = newVelocity;
+	getGraph()->Reset(); 
+	pathfinder->CalculatePath(this);
 }
 
-void Agent::changeVelocityByNodeType(int type)
+Vector2D Agent::cell2pix(Vector2D cell)
 {
-	switch (type)
-	{
-	case 1:
-		setMaxVelocity(200);
-		break;
+	int offset = CELL_SIZE / 2;
+	return Vector2D(cell.x * CELL_SIZE + offset, cell.y * CELL_SIZE + offset);
+}
 
-	case 2:
-		setMaxVelocity(400);
-		break;
-
-	case 3:
-		setMaxVelocity(100);
-		break;
-
-	default:
-		setMaxVelocity(200);
-		break;
-	}
+Vector2D Agent::pix2cell(Vector2D pix)
+{
+	return Vector2D((float)((int)pix.x / CELL_SIZE), (float)((int)pix.y / CELL_SIZE));
 }

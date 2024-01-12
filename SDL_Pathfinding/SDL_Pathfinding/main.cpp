@@ -1,11 +1,12 @@
 #include <iostream>
-#include<SDL.h>
-#include<SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
+
 #include "SDL_SimpleApp.h"
-#include "ScenePathFindingMouse.h"
+#include "SceneDecisionsMouse.h"
 
 using namespace std;
-//Testing new git system
+
 int main(int argc, char ** argv)
 {
 	bool quit = false;
@@ -13,7 +14,7 @@ int main(int argc, char ** argv)
 	
 	SDL_SimpleApp *app = SDL_SimpleApp::Instance();
 
-	Scene *curr_scene = new ScenePathFindingMouse;
+	Scene *curr_scene = new SceneDecisionsMouse;
 	app->setWindowTitle(curr_scene->getTitle());
 
 	
@@ -31,11 +32,17 @@ int main(int argc, char ** argv)
 		switch (event.type)
 		{
 		case SDL_KEYDOWN:
-			if (event.key.keysym.scancode == SDL_SCANCODE_0)
+			if (event.key.keysym.scancode == SDL_SCANCODE_1)
 			{
 				delete(curr_scene);
-				curr_scene = new ScenePathFindingMouse;
+				curr_scene = new SceneDecisionsMouse;
 				app->setWindowTitle(curr_scene->getTitle());
+			}
+			if (event.key.keysym.scancode == SDL_SCANCODE_2)
+			{
+			}
+			if (event.key.keysym.scancode == SDL_SCANCODE_3)
+			{
 			}
 			if ((event.key.keysym.scancode == SDL_SCANCODE_Q) || (event.key.keysym.scancode == SDL_SCANCODE_ESCAPE))
 			{

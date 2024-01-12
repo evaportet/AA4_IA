@@ -131,35 +131,57 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Agent.cpp" />
-    <ClCompile Include="Grid.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="PathFinding.cpp" />
-    <ClCompile Include="PathFollowing.cpp" />
-    <ClCompile Include="ScenePathFindingMouse.cpp" />
-    <ClCompile Include="SDL_SimpleApp.cpp" />
-    <ClCompile Include="Seek.cpp" />
-    <ClCompile Include="utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Agent.h" />
-    <ClInclude Include="Grid.h" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="Path.h" />
-    <ClInclude Include="PathFinding.h" />
-    <ClInclude Include="PathFollowing.h" />
-    <ClInclude Include="Scene.h" />
-    <ClInclude Include="ScenePathFindingMouse.h" />
-    <ClInclude Include="SDL_SimpleApp.h" />
-    <ClInclude Include="Seek.h" />
-    <ClInclude Include="utils.h" />
-    <ClInclude Include="Vector2D.h" />
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="..\res\spritesheet.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\res\maze.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Agent.cpp" />
+    <ClCompile Include="AStar.cpp" />
+    <ClCompile Include="Blackboard.cpp" />
+    <ClCompile Include="FSM.cpp" />
+    <ClCompile Include="FSMChase.cpp" />
+    <ClCompile Include="FSMFlee.cpp" />
+    <ClCompile Include="FSMState.cpp" />
+    <ClCompile Include="FSMWander.cpp" />
+    <ClCompile Include="Graph.cpp" />
+    <ClCompile Include="Greedy.cpp" />
+    <ClCompile Include="Grid.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Node.cpp" />
+    <ClCompile Include="PathFollowing.cpp" />
+    <ClCompile Include="SceneDecisionsMouse.cpp" />
+    <ClCompile Include="SDL_SimpleApp.cpp" />
+    <ClCompile Include="Seek.cpp" />
+    <ClCompile Include="SensorySystem.cpp" />
+    <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="utils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Agent.h" />
+    <ClInclude Include="AStar.h" />
+    <ClInclude Include="Blackboard.h" />
+    <ClInclude Include="Constants.h" />
+    <ClInclude Include="FSM.h" />
+    <ClInclude Include="FSMChase.h" />
+    <ClInclude Include="FSMFlee.h" />
+    <ClInclude Include="FSMState.h" />
+    <ClInclude Include="FSMWander.h" />
+    <ClInclude Include="Graph.h" />
+    <ClInclude Include="Greedy.h" />
+    <ClInclude Include="Grid.h" />
+    <ClInclude Include="Node.h" />
+    <ClInclude Include="Path.h" />
+    <ClInclude Include="PathFollowing.h" />
+    <ClInclude Include="Scene.h" />
+    <ClInclude Include="SceneDecisionsMouse.h" />
+    <ClInclude Include="SDL_SimpleApp.h" />
+    <ClInclude Include="Seek.h" />
+    <ClInclude Include="SensorySystem.h" />
+    <ClInclude Include="Timer.h" />
+    <ClInclude Include="utils.h" />
+    <ClInclude Include="Vector2D.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

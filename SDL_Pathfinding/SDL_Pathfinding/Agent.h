@@ -4,15 +4,38 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "SDL_SimpleApp.h"
-#include "Path.h"
 #include "Vector2D.h"
+
+#include "Path.h"
 #include "utils.h"
 
+#include "Blackboard.h"
+#include "Graph.h"
+class SensorySystem;
 
 class Agent
 {
 public:
-	static int agentID;
+
+	class DecisionMakingAlgorithm
+	{
+	public:
+		DecisionMakingAlgorithm() {};
+		~DecisionMakingAlgorithm() {};
+		virtual void Update(Agent* agent, float dtime) {};
+	};
+
+	class PathFindingAlgorithm
+	{
+	protected:
+		int countFrontier = 0;
+		int counter = 0;
+
+	public:
+		PathFindingAlgorithm() {};
+		virtual ~PathFindingAlgorithm() {};
+		virtual void CalculatePath(Agent* agent) {};
+	};
 
 	class SteeringBehavior
 	{
@@ -21,13 +44,21 @@ public:
 		virtual ~SteeringBehavior() {};
 		virtual void applySteeringForce(Agent *agent, float dtime) {};
 	};
+
+	Blackboard blackboard;
+	SensorySystem *sensors;
+protected:
+
 private:
 	SteeringBehavior *steering_behaviour;
+	DecisionMakingAlgorithm *brain;
+	PathFindingAlgorithm* pathfinder;
+
 	Vector2D position;
 	Vector2D velocity;
 	Vector2D target;
+	Vector2D goal;
 
-	// Pathfinding
 	Path path;
 	int currentTargetIndex;
 
@@ -55,6 +86,7 @@ public:
 	void setPosition(Vector2D position);
 	void setTarget(Vector2D target);
 	void setVelocity(Vector2D velocity);
+	float getOrientation();
 	void addPathPoint(Vector2D point);
 	void setCurrentTargetIndex(int idx);
 	int getCurrentTargetIndex();
@@ -62,9 +94,26 @@ public:
 	Vector2D getPathPoint(int idx);
 	void clearPath();
 	void update(float dtime, SDL_Event *event);
-	void draw(int _r, int _g, int _b, int _h);
+	void draw();
 	bool Agent::loadSpriteTexture(char* filename, int num_frames=1);
-	void setMaxVelocity(float newVelocity);
-	void changeVelocityByNodeType(int type);
+
+	Graph* getGraph() { return blackboard.getGraphPtr(); }
+	void setGoal(Vector2D _goal) { goal = _goal; }
+	Vector2D getGoal() { return goal; }
 	
+	void SetPathfinder(PathFindingAlgorithm* _pathfinder) { pathfinder = _pathfinder; }
+	PathFindingAlgorithm* GetPathfinder() { return pathfinder; }
+	
+	void SetBrain(DecisionMakingAlgorithm* _brain) { brain = _brain; }
+	DecisionMakingAlgorithm* GetBrain() { return brain; }
+
+	void SetSensors(SensorySystem* _sensors) { sensors = _sensors; }
+	SensorySystem *GetSensors() { return sensors; }
+
+	Vector2D cell2pix(Vector2D cell);
+	Vector2D pix2cell(Vector2D pix);
+
+	void CalculatePath();
+	void setMaxForce(float _maxForce) { max_force = _maxForce; };
+	void setMaxVelocity(float maxVelocity) { max_velocity = maxVelocity; };
 };
